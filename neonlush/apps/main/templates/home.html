@@ -25,11 +25,44 @@
     ================================================== -->
     <script src="{% static 'js/modernizr.js' %}"></script>
     <script src="{% static 'js/pace.min.js' %}"></script>
+    <script>
+        createNotify = () => {
+            let email = document.getElementById('mc-email').value;
+            if (checkEmail(email)) {
+                let data = {
+                    'email': email
+                }
+                fetch('/notify-me/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify(data)
+                }).then(response => {
+                    if (response.status === 201) {
+                        document.getElementById('mc-email').value = '';
+                        alert('E-posta adresiniz başarıyla kaydedildi. Bizlerde sizler kadar heyecanlıyız :)');
+                        window.location.reload();
+                    } else {
+                        alert('E-posta adresiniz kaydedilemedi. Lütfen daha sonra tekrar deneyiniz.');
+                    }
+                });
+            } else {
+                alert('Lütfen geçerli bir e-posta adresi giriniz.');
+            }
+        }
+
+        checkEmail = (email) => {
+            let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+        }
+    </script>
 
     <!-- favicons
     ================================================== -->
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
 
 </head>
 
@@ -66,26 +99,25 @@
                     alanında kullanılmaya başlanmış olması bizlere ilham verdi. Bireysel taleplerin
                     karşılanmasında çevrimiçi sistemleri kullanarak <span style="color: #ec008c">neonlush.co</span>
                     olarak hizmet vereceğiz.
-                    Oluşturacağımız online sistem sayesinde artık sizlere daha yakınız.
-                    <p style="margin: 0; padding: 0">
-                        <span style="font-size: 2rem; color: #B3005E">N</span>
-                        <span style="font-size: 2rem; color: #00D7FF">e</span>
-                        <span style="font-size: 2rem; color: #F8F988">o</span>
-                        <span style="font-size: 2rem; color: #FF4A4A">n</span>
-                        <span style="font-size: 2rem; color: #9CFF2E">l</span>
-                        <span style="font-size: 2rem; color: #00D7FF">a</span> kalın <span style="color: #ec008c">:)</span>
-                    </p>
+                    Oluşturacağımız online sistem sayesinde artık sizlere daha yakınız. <br>Detaylı bilgi için <a
+                        href="mailto:info@neonlush.co"
+                        style="color: #ec008c">info@neonlush.co</a>
+                <p style="margin: 0; padding: 0">
+                    <span style="font-size: 2rem; color: #B3005E">N</span>
+                    <span style="font-size: 2rem; color: #00D7FF">e</span>
+                    <span style="font-size: 2rem; color: #F8F988">o</span>
+                    <span style="font-size: 2rem; color: #FF4A4A">n</span>
+                    <span style="font-size: 2rem; color: #9CFF2E">l</span>
+                    <span style="font-size: 2rem; color: #00D7FF">a</span> kalın <span style="color: #ec008c">:)</span>
+                </p>
                 </p>
 
                 <div class="home-content__subscribe">
-                    <form id="mc-form" class="group" novalidate="true">
-                        <input type="email" value="" name="EMAIL" class="email" id="mc-email"
-                               placeholder="Email Adresi" required="">
-                        <input type="submit" name="subscribe" value="Haber ver">
-                        <label for="mc-email" class="subscribe-message"></label>
-                    </form>
+                    <input type="email" value="" name="EMAIL" class="email" id="mc-email"
+                           placeholder="Email Adresi" required="">
+                    <input onclick="createNotify()" type="submit" name="subscribe" value="Haber ver">
                 </div>
-            </div>  <!-- end home-content__text -->
+            </div>
 
 
         </div>
