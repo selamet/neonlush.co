@@ -17,6 +17,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # apps
+    'neonlush.apps.user',
+    'neonlush.apps.main',
+
+    # third party
     'django_extensions',
     'rest_framework',
 
