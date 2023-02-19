@@ -22,3 +22,9 @@ DATABASES = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    '/var/www/static/',
+]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
