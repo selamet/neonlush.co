@@ -37,13 +37,21 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 5. Run database migrations
+### 5. Set up environment variables
+
+Create a `.env` file in the root directory by copying the example:
+
+```bash
+cp .env.example .env
+```
+
+### 6. Run database migrations
 
 ```bash
 python manage.py migrate
 ```
 
-### 6. Create superuser
+### 7. Create superuser
 
 ```bash
 python manage.py createsuperuser
