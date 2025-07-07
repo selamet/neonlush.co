@@ -87,6 +87,9 @@ USE_TZ = True
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Custom User Model
+AUTH_USER_MODEL = 'user.User'
+
 # REST Framework sett
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
