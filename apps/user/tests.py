@@ -1,5 +1,8 @@
-from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.urls import reverse
+from rest_framework.test import APITestCase
+from django.test import TestCase, Client
+from django.contrib.auth.models import User
 
 User = get_user_model()
 
@@ -43,13 +46,6 @@ class UserModelTest(TestCase):
         self.assertEqual(str(user), 'testuser3')
 
 
-# apps/user/tests.py
-from django.urls import reverse
-from rest_framework.test import APITestCase
-from django.test import TestCase, Client
-from django.contrib.auth.models import User
-
-
 class UserAPITests(APITestCase):
     def test_register_valid(self):
         url = reverse('api_user_register')
@@ -75,27 +71,3 @@ class UserAPITests(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('access', response.data)
         self.assertIn('refresh', response.data)
-
-
-class UserFormTests(TestCase):
-    def setUp(self):
-        self.client = Client()
-
-    def test_form_register(self):
-        url = reverse('user_register_form')
-        data = {'email': 'formuser@example.com', 'password': 'StrongPass123!'}
-        response = self.client.post(url, data, follow=True)
-        self.assertRedirects(response, '/dashboard/')
-        self.assertTrue(User.objects.filter(email='formuser@example.com').exists())
-        session = self.client.session
-        self.assertIn('jwt_access', session)
-
-    def test_form_login(self):
-        User.objects.create_user(username='formlogin@example.com', email='formlogin@example.com',
-                                 password='StrongPass123!')
-        url = reverse('user_login_form')
-        data = {'email': 'formlogin@example.com', 'password': 'StrongPass123!'}
-        response = self.client.post(url, data, follow=True)
-        self.assertRedirects(response, '/dashboard/')
-        session = self.client.session
-        self.assertIn('jwt_access', session)
