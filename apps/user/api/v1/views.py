@@ -10,11 +10,20 @@ class RegisterAPIView(APIView):
     parser_classes = [parsers.JSONParser, parsers.MultiPartParser]
     permission_classes = [permissions.AllowAny]
 
-    def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
+    def post(self, request) -> Response:
+        """
+        Handle user registration.
+
+        Args:
+            request: The HTTP request containing user registration data.
+
+        Returns:
+            Response: JWT tokens if registration is successful, or validation errors.
+        """
+        serializer: RegisterSerializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            refresh = RefreshToken.for_user(user)
+            refresh: RefreshToken = RefreshToken.for_user(user)
             return Response({
                 'access': str(refresh.access_token),
                 'refresh': str(refresh)
@@ -26,14 +35,25 @@ class LoginAPIView(APIView):
     parser_classes = [parsers.JSONParser, parsers.MultiPartParser]
     permission_classes = [permissions.AllowAny]
 
-    def post(self, request):
-        serializer = LoginSerializer(data=request.data)
+    def post(self, request) -> Response:
+        """
+        Handle user login.
+
+        Args:
+            request: The HTTP request containing user login data.
+
+        Returns:
+            Response: JWT tokens if login is successful, or error details.
+        """
+        serializer: LoginSerializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
-            email = serializer.validated_data['email']
-            password = serializer.validated_data['password']
+            email: str = serializer.validated_data['email']
+            password: str = serializer.validated_data['password']
             user = authenticate(request, username=email, password=password)
+
             if user:
-                refresh = RefreshToken.for_user(user)
+                refresh: RefreshToken = RefreshToken.for_user(user)
+
                 return Response({
                     'access': str(refresh.access_token),
                     'refresh': str(refresh)
