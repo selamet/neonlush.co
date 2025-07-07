@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions, parsers
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import RegisterSerializer, LoginSerializer
+from apps.user.api.v1.serializers import RegisterSerializer, LoginSerializer
 
 
 class RegisterAPIView(APIView):
