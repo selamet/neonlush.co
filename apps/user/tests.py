@@ -41,3 +41,46 @@ class UserModelTest(TestCase):
         )
         
         self.assertEqual(str(user), 'testuser3')
+
+    def test_user_tag_default_value(self):
+        """Test that user tag defaults to Regular (1)."""
+        user = User.objects.create_user(
+            username='testuser4',
+            email='test4@example.com',
+            password='testpassword'
+        )
+        
+        self.assertEqual(user.tag, 1)  # Default is Regular
+
+    def test_user_tag_choices(self):
+        """Test creating users with different tag values."""
+        user_regular = User.objects.create_user(
+            username='regular_user',
+            tag=1
+        )
+        user_premium = User.objects.create_user(
+            username='premium_user',
+            tag=2
+        )
+        user_vip = User.objects.create_user(
+            username='vip_user',
+            tag=3
+        )
+        user_admin = User.objects.create_user(
+            username='admin_user',
+            tag=4
+        )
+        
+        self.assertEqual(user_regular.tag, 1)
+        self.assertEqual(user_premium.tag, 2)
+        self.assertEqual(user_vip.tag, 3)
+        self.assertEqual(user_admin.tag, 4)
+
+    def test_user_tag_display(self):
+        """Test the tag display value."""
+        user = User.objects.create_user(
+            username='testuser5',
+            tag=2  # Premium
+        )
+        
+        self.assertEqual(user.get_tag_display(), 'Premium')
