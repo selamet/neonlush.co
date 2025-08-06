@@ -28,6 +28,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     'apps.neonlush_main',
     'apps.user',
+    'apps.logging_service',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -40,6 +41,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.logging_service.middleware.RequestResponseLoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'neonlush.urls'
@@ -101,4 +103,64 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
+}
+
+# Request/Response Logging Configuration
+REQUEST_RESPONSE_LOGGING_ENABLED = os.environ.get('REQUEST_RESPONSE_LOGGING_ENABLED', 'True').lower() == 'true'
+MAX_RESPONSE_LOG_SIZE = int(os.environ.get('MAX_RESPONSE_LOG_SIZE', '10000'))
+
+# Logging Configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+        'json': {
+            'format': '{asctime} {levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file_request_response': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'request_response.log'),
+            'formatter': 'json',
+        },
+        'file_application': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'application.log'),
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'request_response': {
+            'handlers': ['file_request_response', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'application': {
+            'handlers': ['file_application', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
 }
