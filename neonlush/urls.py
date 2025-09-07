@@ -20,5 +20,9 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.neonlush_main.urls')),
+    path('api/v1/', include('apps.neonlush_main.api.v1.urls')),
+
     path('user/', include('apps.user.urls')),
+    path('api/v1/user/', include('apps.user.api.v1.urls')),
+
 ]
